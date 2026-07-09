@@ -4,7 +4,7 @@
 */
 #define __FFP_FILE_H__
 
-#include <stdio.h>
+#include "FFP_Utils.h"
 
 extern FILE* ffp_file; /* File global to read from, if requiring to read from another file, we need to rebind it */
 
