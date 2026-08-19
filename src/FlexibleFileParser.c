@@ -7,7 +7,10 @@ int main(void) {
 
     ffp_bind_file(f);
 
-    ffp_read_value("val1=5");
+    char* p = ffp_read_value("x");
+
+    if(p)
+        printf("%s\n", p);
 
     return 0;
 }

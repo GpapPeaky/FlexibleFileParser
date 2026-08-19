@@ -15,8 +15,8 @@ static unsigned int FFP_MAX_LINE_LENGTH = 1024; /* Max line length */
  * 
  * @param value_string Name of string/field to get the value from
  * 
- * @returns The value of the corresponding string/field inside the ffp file, as a string
+ * @returns The value of the corresponding string/field inside the ffp file, as a type agnostic
  */
-char* ffp_read_value(const char* value_string);
+void* ffp_read_value(const char* value_string);
 
 #endif /* __FFP_SCAN_H__ */

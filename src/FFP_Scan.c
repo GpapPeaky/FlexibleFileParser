@@ -6,14 +6,40 @@ static int ffp_validate_line_format(const char* line) {
     // field=value   -> integer
     // field="value" -> string
 
-    return 1;
+    fprintf(stderr, "[FFP_ERR] INVALID LINE FORMAT\n");
+
+    char* trimmed = trim_outer_string(line);
+    
+    typedef enum lineSect {
+        VARIABLE = 0,
+        OPERATOR,
+        VALUE
+    } lineSect; 
+    
+    int varVisited = 0;
+    int opVisited  = 0;
+    int valVisited = 0;
+    
+    for (size_t i = 0 ; trimmed[i] != '/0' ; i++){
+        varVisited = 1;
+        
+        if (trimmed[i] == '=') {
+            opVisited = 1;        
+        }
+    }
+    
+    return varVisited && opVisited && valVisited;
 } 
 
 static char* ffp_get_field_from_line(const char* line) {
-    return "Field";
+        
+    
+
+
+    return "x";
 }
 
-char* ffp_read_value(const char* value_string) {
+void* ffp_read_value(const char* value_string) {
     rewind(ffp_file);
 
     // For now we will brute force it by reading the entire file
@@ -43,8 +69,12 @@ char* ffp_read_value(const char* value_string) {
 
         if (str_compare(value_string, field)) {
             printf("Field \'%s\', found\n", field);
+
+            return field;
         }
 
         lineNum++;
     }
+    
+    return NULL; // Not found
 }

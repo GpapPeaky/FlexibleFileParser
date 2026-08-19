@@ -1,8 +1,14 @@
 FFP
 
+
+x=1
+y= 2
+z =3
+w = 5
+
     val1=5          
-val2=5
-val3=5
-val4=5
-val5=5
-val6="Hello"
+    val2=5
+    val3=5
+    val4=5
+    val5=5
+    val6="Hello"
