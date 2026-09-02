@@ -8,27 +8,29 @@ static int ffp_validate_line_format(const char* line) {
 
     fprintf(stderr, "[FFP_ERR] INVALID LINE FORMAT\n");
 
+    char* tokens[3];
+
     char* trimmed = trim_outer_string(line);
     
-    typedef enum lineSect {
-        VARIABLE = 0,
-        OPERATOR,
-        VALUE
-    } lineSect; 
-    
-    int varVisited = 0;
     int opVisited  = 0;
     int valVisited = 0;
     
-    for (size_t i = 0 ; trimmed[i] != '/0' ; i++){
-        varVisited = 1;
-        
-        if (trimmed[i] == '=') {
-            opVisited = 1;        
-        }
+    printf("original line %s\n", line);
+    printf("trimmed line %s\n", trimmed);
+    
+    char* pch = strtok(trimmed, "="); /* Seperate from '=' */
+
+    tokens[0] = strdup(pch); /* Copy the variable */
+    
+    if (pch) opVisited = 1;
+    
+    unsigned char count = 0 ;
+    while (pch != NULL && count < 3) {
+        printf("token %s\n", pch);
+        tokens[count++] = strtok(NULL, " "); /* Seperate from spaces */
     }
     
-    return varVisited && opVisited && valVisited;
+    return opVisited && valVisited;
 } 
 
 static char* ffp_get_field_from_line(const char* line) {

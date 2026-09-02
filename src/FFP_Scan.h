@@ -9,6 +9,8 @@
 
 static unsigned int FFP_MAX_LINE_LENGTH = 1024; /* Max line length */
 
+#include <string.h>
+
 /**
  * @brief Reads a value of name value_string
  * and returns its value as a string
