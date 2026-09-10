@@ -1,9 +1,8 @@
-#include "FFP_Utils.h"
-#include "FFP_File.h"
-#include "FFP_Scan.h"
+#define __FFP_IMPL__
+#include "../lib/FFP.h"
 
 int main(void) {
-    FILE* f = fopen("test.txt", "r");
+    FILE* f = fopen("tests/test.txt", "r");
 
     ffp_bind_file(f);
 
