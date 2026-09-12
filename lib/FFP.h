@@ -1,4 +1,4 @@
-#ifndef __FFP_H__
+#ifndef __FFP_H__ /* Flexible file parser */
 #define __FFP_H__
 
 #include <stdio.h>
@@ -7,6 +7,8 @@
 #include <string.h>
 
 /* Public */
+
+#pragma region public api
 
 /**
  * @brief Bind a file to the ffp_file global
@@ -27,21 +29,21 @@ void ffp_unbind_file(void);
  */
 int ffp_file_bound(void);
 
+#pragma endregion public api
+
 /* Implementation */
 
 #ifdef __FFP_IMPL__
 
 #pragma region private utilities
 
-static int is_null(char c)
-{
+static int is_null(char c) {
     return c == '\0';
 }
 
 static int FFP_MAX_LINE_LENGTH = 512; /* Max file length for required memory allocations */
 
-static char* trim_outer_string(const char* str)
-{
+static char* trim_outer_string(const char* str) {
     if (!str)
         return NULL;
 
@@ -73,8 +75,7 @@ static char* trim_outer_string(const char* str)
     return construct;
 }
 
-static int str_compare(const char* str1, const char* str2)
-{
+static int str_compare(const char* str1, const char* str2) {
     while (*str1 && *str2) {
         if (*str1 != *str2)
             return 0;
