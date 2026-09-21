@@ -29,11 +29,58 @@ void ffp_unbind_file(void);
  */
 int ffp_file_bound(void);
 
+/**
+ * @brief Read a value string from the bound file
+ * 
+ * @param value_string String of the value name
+ * 
+ * @returns The scanned string as a char*
+ */
+char* ffp_read_string(const char* value_string);
+
+/**
+ * @brief Read a value int from the bound file
+ * 
+ * @param value_string String of the value name
+ * 
+ * @returns The scanned string as an int
+ */
+int ffp_read_int(const char* value_string);
+
+/**
+ * @brief Read a value float from the bound file
+ * 
+ * @param value_string String of the value name
+ * 
+ * @returns The scanned string as a float
+ */
+float ffp_read_float(const char* value_string);
+
 #pragma endregion public api
 
 /* Implementation */
+#pragma region impl
 
 #ifdef __FFP_IMPL__
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 #pragma region private utilities
 
@@ -360,7 +407,7 @@ static char* ffp_get_value_from_line(const char* line) {
     return tokens[VAL];
 }
 
-void* ffp_read_value(const char* value_string) {
+static void* ffp_read_value(const char* value_string) {
     if (!ffp_file_bound()) {
         fprintf(stderr, "File not bound to read from");
         return NULL;
@@ -403,7 +450,13 @@ void* ffp_read_value(const char* value_string) {
     return NULL; // Not found
 }
 
+/* TODO: */
+char* ffp_read_string(const char* value_string);
+int ffp_read_int(const char* value_string);
+float ffp_read_float(const char* value_string);
+
 #pragma endregion scan
+#pragma endregion impl
 
 #endif /* __FFP_IMPL__ */
 
