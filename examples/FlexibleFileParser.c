@@ -1,4 +1,4 @@
-#define __FFP_IMPL__
+#define FFP_IMPL
 #include "../lib/FFP.h"
 
 int main(void) {

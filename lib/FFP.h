@@ -69,7 +69,7 @@ float ffp_read_float(const char* value_string);
 /* Implementation */
 #pragma region impl
 
-#ifdef __FFP_IMPL__
+#ifdef FFP_IMPL
 
 //
 //
@@ -525,6 +525,6 @@ float ffp_read_float(const char* value_string) {
 #pragma endregion scan
 #pragma endregion impl
 
-#endif /* __FFP_IMPL__ */
+#endif /* FFP_IMPL */
 
 #endif /* __FFP_H__ */
