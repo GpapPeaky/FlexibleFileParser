@@ -92,6 +92,13 @@ float ffp_read_float(const char* value_string);
 
 #pragma region private utilities
 
+/* Line format enumerators for validation */
+enum {
+    FFP_FORMAT_VALIDATOR_FIELD = 0,                 /* Field name */
+    FFP_FORMAT_VALIDATOR_OPERATOR,                  /* Operator */
+    FFP_FORMAT_VALIDATOR_VALUE                      /* Value of field */
+};
+
 static int is_null(char c) {
     return c == '\0';
 }
@@ -279,12 +286,6 @@ static int ffp_validate_line_format(const char* line) {
 
     // printf("COMPRESSED %s\n", compressed);
 
-    typedef enum {
-        FIELD = 0,
-        OP,
-        VAL
-    } line_format;
-
     // Save tokens here, validate later
     char* tokens[3];
     for (int j = 0 ; j < 3 ; j++) {
@@ -296,13 +297,13 @@ static int ffp_validate_line_format(const char* line) {
     int opFoundIdx = 0;
     while (!is_null(compressed[idx])) {
         if (compressed[idx] != '=' && !opFound) {
-            tokens[FIELD][idx] = compressed[idx];
+            tokens[FFP_FORMAT_VALIDATOR_FIELD][idx] = compressed[idx];
 
             idx++;
 
             continue;
         } else if (compressed[idx] != '=' && opFound) {
-            tokens[VAL][idx - opFoundIdx - 1] = compressed[idx];
+            tokens[FFP_FORMAT_VALIDATOR_VALUE][idx - opFoundIdx - 1] = compressed[idx];
 
             idx++;
 
@@ -311,7 +312,7 @@ static int ffp_validate_line_format(const char* line) {
             opFound = 1;
             opFoundIdx = idx++;
 
-            tokens[OP][0] = '=';
+            tokens[FFP_FORMAT_VALIDATOR_OPERATOR][0] = '=';
 
             continue;
         } else {
@@ -319,11 +320,11 @@ static int ffp_validate_line_format(const char* line) {
         }
     }
 
-    // printf("%s\n", tokens[FIELD]);
-    // printf("%s\n", tokens[OP]);
-    // printf("%s\n", tokens[VAL]);
+    // printf("%s\n", tokens[FFP_FORMAT_VALIDATOR_FIELD]);
+    // printf("%s\n", tokens[FFP_FORMAT_VALIDATOR_OPERATOR]);
+    // printf("%s\n", tokens[FFP_FORMAT_VALIDATOR_VALUE]);
 
-    return tokens[FIELD] && tokens[OP] && tokens[VAL];
+    return tokens[FFP_FORMAT_VALIDATOR_FIELD] && tokens[FFP_FORMAT_VALIDATOR_OPERATOR] && tokens[FFP_FORMAT_VALIDATOR_VALUE];
 } 
 
 static char* ffp_get_field_from_line(const char* line) {
@@ -359,12 +360,6 @@ static char* ffp_get_field_from_line(const char* line) {
 
     // printf("COMPRESSED %s\n", compressed);
 
-    typedef enum {
-        FIELD = 0,
-        OP,
-        VAL
-    } line_format;
-
     // Save tokens here, validate later
     char* tokens[3];
     for (int j = 0 ; j < 3 ; j++) {
@@ -376,13 +371,13 @@ static char* ffp_get_field_from_line(const char* line) {
     int opFoundIdx = 0;
     while (!is_null(compressed[idx])) {
         if (compressed[idx] != '=' && !opFound) {
-            tokens[FIELD][idx] = compressed[idx];
+            tokens[FFP_FORMAT_VALIDATOR_FIELD][idx] = compressed[idx];
 
             idx++;
 
             continue;
         } else if (compressed[idx] != '=' && opFound) {
-            tokens[VAL][idx - opFoundIdx - 1] = compressed[idx];
+            tokens[FFP_FORMAT_VALIDATOR_VALUE][idx - opFoundIdx - 1] = compressed[idx];
 
             idx++;
 
@@ -391,7 +386,7 @@ static char* ffp_get_field_from_line(const char* line) {
             opFound = 1;
             opFoundIdx = idx++;
 
-            tokens[OP][0] = '=';
+            tokens[FFP_FORMAT_VALIDATOR_OPERATOR][0] = '=';
 
             continue;
         } else {
@@ -399,7 +394,7 @@ static char* ffp_get_field_from_line(const char* line) {
         }
     }
 
-    return tokens[FIELD];
+    return tokens[FFP_FORMAT_VALIDATOR_FIELD];
 }
 
 static char* ffp_get_value_from_line(const char* line) {
@@ -435,12 +430,6 @@ static char* ffp_get_value_from_line(const char* line) {
 
     // printf("COMPRESSED %s\n", compressed);
 
-    typedef enum {
-        FIELD = 0,
-        OP,
-        VAL
-    } line_format;
-
     // Save tokens here, validate later
     char* tokens[3];
     for (int j = 0 ; j < 3 ; j++) {
@@ -452,13 +441,13 @@ static char* ffp_get_value_from_line(const char* line) {
     int opFoundIdx = 0;
     while (!is_null(compressed[idx])) {
         if (compressed[idx] != '=' && !opFound) {
-            tokens[FIELD][idx] = compressed[idx];
+            tokens[FFP_FORMAT_VALIDATOR_FIELD][idx] = compressed[idx];
 
             idx++;
 
             continue;
         } else if (compressed[idx] != '=' && opFound) {
-            tokens[VAL][idx - opFoundIdx - 1] = compressed[idx];
+            tokens[FFP_FORMAT_VALIDATOR_VALUE][idx - opFoundIdx - 1] = compressed[idx];
 
             idx++;
 
@@ -467,7 +456,7 @@ static char* ffp_get_value_from_line(const char* line) {
             opFound = 1;
             opFoundIdx = idx++;
 
-            tokens[OP][0] = '=';
+            tokens[FFP_FORMAT_VALIDATOR_OPERATOR][0] = '=';
 
             continue;
         } else {
@@ -475,7 +464,7 @@ static char* ffp_get_value_from_line(const char* line) {
         }
     }
 
-    return tokens[VAL];
+    return tokens[FFP_FORMAT_VALIDATOR_VALUE];
 }
 
 static void* ffp_read_value(const char* value_string) {
