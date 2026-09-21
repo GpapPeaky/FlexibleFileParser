@@ -156,7 +156,9 @@ static float ascii_to_float(const char* number_string) {
     return sign * (result + (fraction / divisor));
 }
 
-static int FFP_MAX_LINE_LENGTH = 512; /* Max file length for required memory allocations */
+enum {
+    FFP_MAX_LINE_LENGTH = 512  /* Max file length for required memory allocations */
+};
 
 static char* trim_outer_string(const char* str) {
     if (!str)

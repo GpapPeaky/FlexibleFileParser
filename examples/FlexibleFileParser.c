@@ -2,9 +2,7 @@
 #include "../lib/FFP.h"
 
 int main(void) {
-    FILE* file = fopen("tests/test.txt", "r");
-
-    ffp_bind_file(file);
+    ffp_open("tests/test.txt");
 
     char*   s   = ffp_read_string("x");
     int     i   = ffp_read_int("val2");
