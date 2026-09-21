@@ -30,6 +30,14 @@ void ffp_unbind_file(void);
 int ffp_file_bound(void);
 
 /**
+ * @brief Opens a file of specific name and binds it to the 
+ * ffp_file global
+ * 
+ * @param fname Name of file to bind
+ */
+void ffp_open(const char* fname);
+
+/**
  * @brief Read a value string from the bound file
  * 
  * @param value_string String of the value name
@@ -88,6 +96,59 @@ static int is_null(char c) {
     return c == '\0';
 }
 
+static int ascii_to_int(const char* number_string) {
+    int number = 0;
+    int neg = number_string[0] == '-';
+    int i = neg ? 1 : 0;
+    while (number_string[i] >= '0' && number_string[i] <= '9') {
+      number *= 10;                     // multiply number by 10
+      number += number_string[i] - '0'; // convet ASCII '0'..'9' to digit 0..9 and add it to number           
+      i++;                              // step one digit forward
+    }
+
+    if(neg) number *= -1;
+    
+    return number;
+}
+
+static float ascii_to_float(const char* number_string) {
+    float result = 0.0f;
+    float fraction = 0.0f;
+    float divisor = 1.0f;
+    int sign = 1;
+    int decimal = 0;
+
+    if (*number_string == '-') {
+        sign = -1;
+        number_string++;
+    } else if (*number_string == '+') {
+        number_string++;
+    }
+
+    while (*number_string != '\0') {
+        if (*number_string == '.') {
+            decimal = 1;
+            number_string++;
+            continue;
+        }
+
+        if (*number_string >= '0' && *number_string <= '9') {
+            if (!decimal) {
+                result = result * 10.0f + (*number_string - '0');
+            } else {
+                fraction = fraction * 10.0f + (*number_string - '0');
+                divisor *= 10.0f;
+            }
+        } else {
+            break; // Stop on invalid character
+        }
+
+        number_string++;
+    }
+
+    return sign * (result + (fraction / divisor));
+}
+
 static int FFP_MAX_LINE_LENGTH = 512; /* Max file length for required memory allocations */
 
 static char* trim_outer_string(const char* str) {
@@ -144,7 +205,7 @@ void ffp_bind_file(FILE* file) {
     ffp_file = file;
 
     if (!ffp_file_bound()) {
-        fprintf(stderr, "Failed to bind file\n");
+        fprintf(stderr, "[FFP] Failed to bind file\n");
         return;
     }
 
@@ -155,7 +216,7 @@ void ffp_bind_file(FILE* file) {
     if (!str_compare(checksum, "FFP")) {
         fprintf(
             stderr,
-            "Invalid file format, file needs to be specified as FFP at line 1\n"
+            "[FFP] Invalid file format, file needs to be specified as FFP at line 1\n"
         );
 
         ffp_unbind_file();
@@ -169,6 +230,16 @@ void ffp_unbind_file(void) {
 
 int ffp_file_bound(void) {
     return ffp_file != NULL;
+}
+
+void ffp_open(const char* fname) {
+    FILE* f = fopen(fname, "r");
+
+    if(!f) fprintf(stderr, "[FFP] Failed to load file with name %s\n", fname);
+    
+    ffp_bind_file(f);
+
+    if(!ffp_file_bound()) fprintf(stderr, "[FFP] Failed to bind file with name %s\n", fname);
 }
 
 #pragma endregion file
@@ -409,7 +480,7 @@ static char* ffp_get_value_from_line(const char* line) {
 
 static void* ffp_read_value(const char* value_string) {
     if (!ffp_file_bound()) {
-        fprintf(stderr, "File not bound to read from");
+        fprintf(stderr, "[FFP] File not bound to read from");
         return NULL;
     }
 
@@ -419,7 +490,7 @@ static void* ffp_read_value(const char* value_string) {
     // and checking for the valuw_string 
 
     if (!ffp_file_bound()) {
-        fprintf(stderr,"File not bound to read from after rewind");
+        fprintf(stderr,"[FFP] File not bound to read from after rewind");
         return NULL;
     }
 
@@ -432,7 +503,7 @@ static void* ffp_read_value(const char* value_string) {
         int valid = ffp_validate_line_format(line);
 
         if (!valid) {
-            fprintf(stderr,"Invalid line format at line %lld\n", lineNum);
+            fprintf(stderr,"[FFP] Invalid line format at line %lld\n", lineNum);
             continue;
         }
 
@@ -441,7 +512,7 @@ static void* ffp_read_value(const char* value_string) {
         if (str_compare(value_string, field)) {
             // printf("Field \'%s\', found\n", field);
 
-            return ffp_get_value_from_line(line);
+            return (void*)ffp_get_value_from_line(line);
         }
 
         lineNum++;
@@ -450,10 +521,17 @@ static void* ffp_read_value(const char* value_string) {
     return NULL; // Not found
 }
 
-/* TODO: */
-char* ffp_read_string(const char* value_string);
-int ffp_read_int(const char* value_string);
-float ffp_read_float(const char* value_string);
+char* ffp_read_string(const char* value_string) {
+    return ffp_read_value(value_string);
+}
+
+int ffp_read_int(const char* value_string) {
+    return ascii_to_int(ffp_read_value(value_string));
+}
+
+float ffp_read_float(const char* value_string) {
+    return ascii_to_float(ffp_read_value(value_string));
+}
 
 #pragma endregion scan
 #pragma endregion impl

@@ -2,18 +2,20 @@
 #include "../lib/FFP.h"
 
 int main(void) {
-    FILE* f = fopen("tests/test.txt", "r");
+    FILE* file = fopen("tests/test.txt", "r");
 
-    ffp_bind_file(f);
+    ffp_bind_file(file);
 
-    char* p = ffp_read_value("x");
-    int* p2 = ffp_read_value("val2");
+    char*   s   = ffp_read_string("x");
+    int     i   = ffp_read_int("val2");
+    float   f   = ffp_read_float("f1");
+    double  pi  = ffp_read_float("pi"); 
 
-    if(p)
-        printf("%s\n", p);
-
-    if(p2)
-        printf("%s\n", p2);
+    if(s) printf("%s\n", s);
+        
+    printf("%d\n", i);
+    printf("%f\n",  f);
+    printf("%g\n",  pi);
 
     return 0;
 }
