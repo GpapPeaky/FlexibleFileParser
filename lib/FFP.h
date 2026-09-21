@@ -1,5 +1,5 @@
-#ifndef FFP_INCLUDED /* Flexible file parser */
-#define FFP_INCLUDED
+#ifndef FFP_H_INCLUDED /* Flexible file parser */
+#define FFP_H_INCLUDED
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -527,4 +527,4 @@ float ffp_read_float(const char* value_string) {
 
 #endif /* FFP_IMPL */
 
-#endif /* FFP_INCLUDED */
+#endif /* FFP_H_INCLUDED */
