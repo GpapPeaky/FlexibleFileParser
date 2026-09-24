@@ -64,6 +64,15 @@ int ffp_read_int(const char* value_string);
  */
 float ffp_read_float(const char* value_string);
 
+/**
+ * @brief Read a value double from the bound file
+ * 
+ * @param value_string String of the value name
+ * 
+ * @returns The scanned string as a double
+ */
+double ffp_read_double(const char* value_string);
+
 #pragma endregion public api
 
 /* Implementation */
@@ -154,6 +163,48 @@ static float ascii_to_float(const char* number_string) {
     }
 
     return sign * (result + (fraction / divisor));
+}
+
+static double ascii_to_double(const char* number_string) {
+    double result = 0.0;
+    double divisor = 10.0;
+    int sign = 1;
+    int decimal = 0;
+
+    if (*number_string == '-') {
+        sign = -1;
+        number_string++;
+    } else if (*number_string == '+') {
+        number_string++;
+    }
+
+    while (*number_string != '\0') {
+        if (*number_string == '.') {
+            if (decimal)
+                break; // second decimal point
+
+            decimal = 1;
+            number_string++;
+            continue;
+        }
+
+        if (*number_string >= '0' && *number_string <= '9') {
+            int digit = *number_string - '0';
+
+            if (!decimal) {
+                result = result * 10.0 + digit;
+            } else {
+                result += digit / divisor;
+                divisor *= 10.0;
+            }
+        } else {
+            break;
+        }
+
+        number_string++;
+    }
+
+    return sign * result;
 }
 
 enum {
@@ -522,6 +573,10 @@ int ffp_read_int(const char* value_string) {
 
 float ffp_read_float(const char* value_string) {
     return ascii_to_float(ffp_read_value(value_string));
+}
+
+double ffp_read_double(const char* value_string) {
+    return ascii_to_double(ffp_read_value(value_string));
 }
 
 #pragma endregion scan

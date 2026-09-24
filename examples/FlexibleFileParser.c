@@ -7,13 +7,13 @@ int main(void) {
     char*   s   = ffp_read_string("x");
     int     i   = ffp_read_int("val2");
     float   f   = ffp_read_float("f1");
-    double  pi  = ffp_read_float("pi"); 
+    double  pi  = ffp_read_double("pi"); 
 
     if(s) printf("%s\n", s);
         
-    printf("%d\n", i);
+    printf("%i\n",  i);
     printf("%f\n",  f);
-    printf("%g\n",  pi);
+    printf("%.17f\n",  pi);
 
     return 0;
 }
